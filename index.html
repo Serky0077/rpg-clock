@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Relógio de Campanha RPG</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #0f0;
+      text-align: center;
+      padding: 50px;
+    }
+    .time-display {
+      font-size: 3em;
+      margin: 20px;
+    }
+    button {
+      margin: 5px;
+      padding: 10px 20px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Relógio de Campanha RPG</h1>
+  <div class="time-display" id="rpg-time">Dia 1 - 00:00</div>
+  <div class="time-display" id="event-display">🌌 Meia-noite</div>
+  <button onclick="startClock()">Iniciar</button>
+  <button onclick="pauseClock()">Pausar</button>
+  <button onclick="resetClock()">Resetar</button>
+
+  <script>
+    let startTime = null;
+    let elapsed = 0;
+    let interval = null;
+
+    function formatRPGTime(totalMinutes) {
+      const days = Math.floor(totalMinutes / 1440); // 1440 min = 1 dia
+      const hours = Math.floor((totalMinutes % 1440) / 60);
+      const minutes = totalMinutes % 60;
+
+      return {
+        text: `Dia ${days + 1} - ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`,
+        hour: hours,
+        minute: minutes
+      };
+    }
+
+    function getEvent(hour) {
+      if (hour >= 3 && hour < 6) return "💤 Madrugada";
+      if (hour >= 6 && hour < 8) return "🌄 Amanhecer";
+      if (hour >= 8 && hour < 12) return "☕ Início das atividades";
+      if (hour >= 12 && hour < 15) return "🌞 Meio-dia";
+      if (hour >= 15 && hour < 18) return "🍂 Tarde avançada";
+      if (hour >= 18 && hour < 21) return "🌇 Anoitecer";
+      if (hour >= 21 && hour < 24) return "🌙 Início da noite";
+      return "🌌 Meia-noite";
+    }
+
+    function updateDisplay() {
+      const rpgMinutes = Math.floor(elapsed / 1000); // 1 segundo real = 1 minuto RPG
+      const time = formatRPGTime(rpgMinutes);
+      document.getElementById('rpg-time').textContent = time.text;
+      document.getElementById('event-display').textContent = getEvent(time.hour);
+    }
+
+    function startClock() {
+      if (!interval) {
+        startTime = Date.now() - elapsed;
+        interval = setInterval(() => {
+          elapsed = Date.now() - startTime;
+          updateDisplay();
+        }, 1000);
+      }
+    }
+
+    function pauseClock() {
+      clearInterval(interval);
+      interval = null;
+    }
+
+    function resetClock() {
+      pauseClock();
+      elapsed = 0;
+      updateDisplay();
+    }
+
+    updateDisplay(); // mostra estado inicial
+  </script>
+</body>
+</html>
