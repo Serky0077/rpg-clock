@@ -2,5 +2,6 @@
   "id": "rpg-clock",
   "name": "Relógio de Campanha",
   "description": "Um relógio que simula o tempo de jogo baseado no tempo real.",
+  "version": "1.0.0",
   "script": "index.html"
 }
